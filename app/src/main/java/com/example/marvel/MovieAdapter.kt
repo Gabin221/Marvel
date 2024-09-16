@@ -6,24 +6,23 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.marvel.databinding.ItemMovieBinding
 import com.squareup.picasso.Picasso
 
-class MovieAdapter(movies: List<Movie>) : RecyclerView.Adapter<MovieAdapter.MovieViewHolder>() {
-
-    // Filtrer les films avant de les utiliser dans l'adaptateur
-    private val upcomingMovies = movies
+class MovieAdapter(private val movies: MutableList<Movie>) : RecyclerView.Adapter<MovieAdapter.MovieViewHolder>() {
 
     class MovieViewHolder(private val binding: ItemMovieBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(movie: Movie) {
-            binding.title.text = movie.title
-            binding.decompte.text = "${movie.days_until} jours restants"
-            Picasso.get().load(movie.poster_url).into(binding.poster)
-            binding.overview.text = movie.overview
-            binding.releaseDate.text = date(movie.release_date)
+            if (!date(movie.release_date).equals("")) {
+                binding.title.text = movie.title
+                binding.decompte.text = "${movie.days_until} jours restants"
+                Picasso.get().load(movie.poster_url).into(binding.poster)
+                binding.overview.text = movie.overview
+                binding.releaseDate.text = date(movie.release_date)
+            }
         }
 
         private fun date(releaseDate: String?): String {
             if (releaseDate != null) {
                 val liste = releaseDate.split("-")
-                return "${liste[2]}-${liste[1]}-${liste[0]}"
+                return liste[2] + "-" + liste[1] + "-" + liste[0]
             } else {
                 return ""
             }
@@ -36,8 +35,14 @@ class MovieAdapter(movies: List<Movie>) : RecyclerView.Adapter<MovieAdapter.Movi
     }
 
     override fun onBindViewHolder(holder: MovieViewHolder, position: Int) {
-        holder.bind(upcomingMovies[position])
+        holder.bind(movies[position])
     }
 
-    override fun getItemCount() = upcomingMovies.size
+    override fun getItemCount() = movies.size
+
+    fun updateMovies(newMovies: List<Movie>) {
+        movies.clear()
+        movies.addAll(newMovies)
+        notifyDataSetChanged()
+    }
 }
