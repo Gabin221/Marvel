@@ -6,7 +6,10 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.marvel.databinding.ItemMovieBinding
 import com.squareup.picasso.Picasso
 
-class MovieAdapter(private val movies: List<Movie>) : RecyclerView.Adapter<MovieAdapter.MovieViewHolder>() {
+class MovieAdapter(movies: List<Movie>) : RecyclerView.Adapter<MovieAdapter.MovieViewHolder>() {
+
+    // Filtrer les films avant de les utiliser dans l'adaptateur
+    private val upcomingMovies = movies
 
     class MovieViewHolder(private val binding: ItemMovieBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(movie: Movie) {
@@ -20,7 +23,7 @@ class MovieAdapter(private val movies: List<Movie>) : RecyclerView.Adapter<Movie
         private fun date(releaseDate: String?): String {
             if (releaseDate != null) {
                 val liste = releaseDate.split("-")
-                return liste[2] + "-" + liste[1] + "-" + liste[0]
+                return "${liste[2]}-${liste[1]}-${liste[0]}"
             } else {
                 return ""
             }
@@ -33,8 +36,8 @@ class MovieAdapter(private val movies: List<Movie>) : RecyclerView.Adapter<Movie
     }
 
     override fun onBindViewHolder(holder: MovieViewHolder, position: Int) {
-        holder.bind(movies[position])
+        holder.bind(upcomingMovies[position])
     }
 
-    override fun getItemCount() = movies.size
+    override fun getItemCount() = upcomingMovies.size
 }

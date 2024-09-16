@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.LinearLayout
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -46,14 +47,15 @@ class AVenirFragment : Fragment() {
     private fun fetchMovies() {
         CoroutineScope(Dispatchers.IO).launch {
             var date: String? = null
-            do {
-                val movie = mcuApiService.getNextMovie(date)
+            var movie = mcuApiService.getNextMovie(date)
+            while (movie.following_production != null) {
                 date = movie.release_date
                 withContext(Dispatchers.Main) {
                     movies.add(movie)
                     recyclerView.adapter?.notifyDataSetChanged()
                 }
-            } while (movie.following_production != null)
+                movie = mcuApiService.getNextMovie(date)
+            }
         }
     }
 
