@@ -13,7 +13,6 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import com.example.marvel.MoviePreferences
 import com.example.marvel.R
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
@@ -64,9 +63,11 @@ class UpdateFragment : Fragment() {
         movieSpinner.adapter = spinnerAdapter
 
         deleteButton.setOnClickListener {
-            val position = movieSpinner.selectedItemPosition
-            if (position != Spinner.INVALID_POSITION && position >= 0) {
-                supprimerFilm(position)
+            if (listeFilms.isNotEmpty()) {
+                val element = movieSpinner.selectedItem.toString()
+                supprimerFilm(element)
+            } else {
+                Toast.makeText(requireContext(), "Aucun film disponible", Toast.LENGTH_SHORT).show()
             }
         }
 
@@ -75,16 +76,21 @@ class UpdateFragment : Fragment() {
         return rootView
     }
 
-    private fun supprimerFilm(position: Int) {
+    private fun supprimerFilm(element: String) {
         lifecycleScope.launch {
             val movies = MoviePreferences.getMovies(requireContext()).first().toMutableList()
-            if (position <= movies.size) {
-                movies.removeAt(position)
+            if (element in movies) {
+                movies.remove(element)
                 MoviePreferences.saveMovies(requireContext(), movies)
                 withContext(Dispatchers.Main) {
-                    listeFilms.removeAt(position)
+                    listeFilms.remove(element)
                     (movieSpinner.adapter as ArrayAdapter<*>).notifyDataSetChanged()
-                    Toast.makeText(requireContext(), "Le film a été supprimé.", Toast.LENGTH_SHORT).show()
+
+                    if (listeFilms.isEmpty()) {
+                        Toast.makeText(requireContext(), "Aucun film disponible", Toast.LENGTH_SHORT).show()
+                    } else {
+                        Toast.makeText(requireContext(), "Le film a été supprimé.", Toast.LENGTH_SHORT).show()
+                    }
                 }
             }
         }
@@ -95,8 +101,11 @@ class UpdateFragment : Fragment() {
             val movies = MoviePreferences.getMovies(requireContext()).first()
             withContext(Dispatchers.Main) {
                 listeFilms.clear()
-                listeFilms.add("--- Choisir un film ---")
-                listeFilms.addAll(movies)
+                if (movies.isNotEmpty()) {
+                    listeFilms.addAll(movies)
+                } else {
+                    Toast.makeText(requireContext(), "Aucun film disponible", Toast.LENGTH_SHORT).show()
+                }
                 (movieSpinner.adapter as ArrayAdapter<*>).notifyDataSetChanged()
             }
         }
@@ -107,9 +116,9 @@ class UpdateFragment : Fragment() {
             val movies = MoviePreferences.getMovies(requireContext()).first().toMutableList()
 
             if (position == null || position < 0 || position >= movies.size) {
-                movies.add("${movies.size + 1} - $title")
+                movies.add(title)
             } else {
-                movies.add(position, "$position - $title")
+                movies.add(position, title)
             }
 
             MoviePreferences.saveMovies(requireContext(), movies)
