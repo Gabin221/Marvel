@@ -27,8 +27,7 @@ class UpdateFragment : Fragment() {
     private lateinit var movieSpinner: Spinner
     private lateinit var deleteButton: Button
 
-    private lateinit var dataStoreManager: DataStoreManager
-    private var moviesList: MutableList<String> = mutableListOf()
+    private val listeFilms = mutableListOf<String>()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -44,49 +43,62 @@ class UpdateFragment : Fragment() {
 
         addButton.setOnClickListener {
             val title = movieTitleInput.text.toString()
-            val position = positionInput.text.toString().toIntOrNull()
+            val positionStr = positionInput.text.toString()
 
             if (title.isEmpty()) {
                 Toast.makeText(requireContext(), "Please enter a movie title", Toast.LENGTH_SHORT).show()
+            } else if (positionStr.isNotEmpty()) {
+                val position = positionStr.toIntOrNull()
+                if (position != null) {
+                    addOrUpdateMovie(title, position)
+                } else {
+                    Toast.makeText(requireContext(), "Invalid position", Toast.LENGTH_SHORT).show()
+                }
             } else {
-                addOrUpdateMovie(title, position)
+                addOrUpdateMovie(title, null)
             }
         }
 
-        // Charger la liste des films dans le Spinner
-        loadMoviesIntoSpinner()
+        val spinnerAdapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, listeFilms)
+        spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        movieSpinner.adapter = spinnerAdapter
 
-        // Configurer l'action du bouton "Supprimer"
         deleteButton.setOnClickListener {
-            deleteSelectedMovie()
+            val position = movieSpinner.selectedItemPosition
+            if (position != Spinner.INVALID_POSITION && position > 0) {
+                supprimerFilm(position)
+            }
         }
+
+        obtainMovies()
 
         return rootView
     }
 
-    private fun loadMoviesIntoSpinner() {
-        CoroutineScope(Dispatchers.IO).launch {
-            moviesList = dataStoreManager.getMovies().toMutableList()
-            withContext(Dispatchers.Main) {
-                val adapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, moviesList)
-                adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-                movieSpinner.adapter = adapter
+    private fun supprimerFilm(position: Int) {
+        lifecycleScope.launch {
+            val movies = MoviePreferences.getMovies(requireContext()).first().toMutableList()
+            if (position in movies.indices) {
+                movies.removeAt(position)
+                MoviePreferences.saveMovies(requireContext(), movies)
+                withContext(Dispatchers.Main) {
+                    listeFilms.removeAt(position)
+                    (movieSpinner.adapter as ArrayAdapter<*>).notifyDataSetChanged()
+                    Toast.makeText(requireContext(), "Movie deleted", Toast.LENGTH_SHORT).show()
+                }
             }
         }
     }
 
-    private fun deleteSelectedMovie() {
-        val selectedMovie = movieSpinner.selectedItem as? String
-        if (selectedMovie != null) {
-            CoroutineScope(Dispatchers.IO).launch {
-                // Supprimer le film sélectionné de la DataStore
-                dataStoreManager.removeMovie(selectedMovie)
-                // Recharger la liste après suppression
-                loadMoviesIntoSpinner()
+    private fun obtainMovies() {
+        lifecycleScope.launch {
+            val movies = MoviePreferences.getMovies(requireContext()).first()
+            withContext(Dispatchers.Main) {
+                listeFilms.clear()
+                listeFilms.add("--- Choisir un film ---")
+                listeFilms.addAll(movies)
+                (movieSpinner.adapter as ArrayAdapter<*>).notifyDataSetChanged()
             }
-
-            // Afficher un message de confirmation
-            Toast.makeText(requireContext(), "Film supprimé : $selectedMovie", Toast.LENGTH_SHORT).show()
         }
     }
 

@@ -4,18 +4,29 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:gravity="center_vertical"
     android:padding="16dp">
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Ajouter un film"
+        android:textColor="@color/black"
+        android:textStyle="bold"
+        android:textSize="25sp"/>
 
     <EditText
         android:id="@+id/et_movie_title"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="48dp"
+        android:autofillHints="username"
         android:hint="Enter movie title"/>
 
     <EditText
         android:id="@+id/et_position"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="48dp"
+        android:autofillHints="username"
         android:hint="Enter position (optional)"
         android:inputType="number"/>
 
@@ -23,19 +34,33 @@
         android:id="@+id/btn_add_update_movie"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Add/Update Movie"/>
+        android:text="Ajouter"/>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:layout_marginVertical="50dp"
+        android:background="@color/black"/>
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Supprimer un film"
+        android:textColor="@color/black"
+        android:textStyle="bold"
+        android:textSize="25sp"/>
 
     <Spinner
         android:id="@+id/movieSpinner"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="48dp"
         android:spinnerMode="dropdown" />
 
     <Button
         android:id="@+id/deleteButton"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Supprimer le film sélectionné"
+        android:text="Supprimer"
         android:layout_gravity="center"
         android:padding="12dp" />
 </LinearLayout>
