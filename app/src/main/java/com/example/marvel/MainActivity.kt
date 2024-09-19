@@ -1,7 +1,10 @@
 package com.example.marvel
 
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.view.Menu
+import android.widget.TextView
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.navigation.NavigationView
 import androidx.navigation.findNavController
@@ -38,6 +41,16 @@ class MainActivity : AppCompatActivity() {
         )
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
+
+        val headerView = navView.getHeaderView(0)
+
+        val urlTextView = headerView.findViewById<TextView>(R.id.textView)
+        urlTextView.text = getString(R.string.nav_header_subtitle)
+
+        urlTextView.setOnClickListener {
+            val intent = Intent(Intent.ACTION_VIEW, Uri.parse(urlTextView.text.toString()))
+            startActivity(intent)
+        }
     }
 
     override fun onSupportNavigateUp(): Boolean {

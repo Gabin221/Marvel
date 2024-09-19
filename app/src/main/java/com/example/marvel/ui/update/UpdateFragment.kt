@@ -65,7 +65,7 @@ class UpdateFragment : Fragment() {
 
         deleteButton.setOnClickListener {
             val position = movieSpinner.selectedItemPosition
-            if (position != Spinner.INVALID_POSITION && position > 0) {
+            if (position != Spinner.INVALID_POSITION && position >= 0) {
                 supprimerFilm(position)
             }
         }
@@ -78,13 +78,13 @@ class UpdateFragment : Fragment() {
     private fun supprimerFilm(position: Int) {
         lifecycleScope.launch {
             val movies = MoviePreferences.getMovies(requireContext()).first().toMutableList()
-            if (position in movies.indices) {
+            if (position <= movies.size) {
                 movies.removeAt(position)
                 MoviePreferences.saveMovies(requireContext(), movies)
                 withContext(Dispatchers.Main) {
                     listeFilms.removeAt(position)
                     (movieSpinner.adapter as ArrayAdapter<*>).notifyDataSetChanged()
-                    Toast.makeText(requireContext(), "Movie deleted", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(requireContext(), "Le film a été supprimé.", Toast.LENGTH_SHORT).show()
                 }
             }
         }
@@ -107,16 +107,15 @@ class UpdateFragment : Fragment() {
             val movies = MoviePreferences.getMovies(requireContext()).first().toMutableList()
 
             if (position == null || position < 0 || position >= movies.size) {
-                // Add movie at the end
-                movies.add(title)
+                movies.add("${movies.size + 1} - $title")
             } else {
-                // Update the movie at the given position
-                //movies[position] = title
-                movies.add(position, title)
+                movies.add(position, "$position - $title")
             }
 
             MoviePreferences.saveMovies(requireContext(), movies)
-            Toast.makeText(requireContext(), "Movie updated", Toast.LENGTH_SHORT).show()
+            movieTitleInput.text.clear()
+            positionInput.text.clear()
+            Toast.makeText(requireContext(), "Film ajouté.", Toast.LENGTH_SHORT).show()
         }
     }
 }
