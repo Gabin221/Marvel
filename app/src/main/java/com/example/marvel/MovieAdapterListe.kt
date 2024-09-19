@@ -25,7 +25,7 @@ class MovieAdapterListe(
     }
 
     override fun onBindViewHolder(holder: MovieViewHolder, position: Int) {
-        holder.movieTitle.text = movieList[position]
+        holder.movieTitle.text = "${position+1} - ${movieList[position]}"
 
         holder.movieCheckbox.isChecked = selectedMovies.get(position, false)
 
