@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mobile_navigation"
+    app:startDestination="@+id/nav_a_venir">
+
+    <fragment
+        android:id="@+id/nav_a_venir"
+        android:name="com.example.marvel.ui.avenir.AVenirFragment"
+        android:label="@string/menu_a_venir"
+        tools:layout="@layout/fragment_a_venir" />
+
+    <fragment
+        android:id="@+id/nav_liste"
+        android:name="com.example.marvel.ui.liste.ListeFragment"
+        android:label="@string/menu_liste"
+        tools:layout="@layout/fragment_liste" />
+
+    <fragment
+        android:id="@+id/nav_update"
+        android:name="com.example.marvel.ui.update.UpdateFragment"
+        android:label="@string/menu_update"
+        tools:layout="@layout/fragment_update" />
+</navigation>

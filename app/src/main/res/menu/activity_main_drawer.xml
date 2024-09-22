@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view">
+
+    <group android:id="@+id/data">
+        <item
+            android:id="@+id/nav_a_venir"
+            android:icon="@drawable/ic_menu_a_venir"
+            android:title="@string/menu_a_venir" />
+        <item
+            android:id="@+id/nav_liste"
+            android:icon="@drawable/ic_menu_liste"
+            android:title="@string/menu_liste" />
+    </group>
+
+    <group android:id="@+id/update_data">
+        <item
+            android:id="@+id/nav_update"
+            android:icon="@drawable/ic_menu_update"
+            android:title="@string/menu_update" />
+    </group>
+</menu>
