@@ -14,7 +14,8 @@ class MovieAdapter(private val movies: MutableList<Movie>) : RecyclerView.Adapte
                 binding.title.text = movie.title
                 binding.decompte.text = "${movie.days_until} jours restants"
                 Picasso.get().load(movie.poster_url).into(binding.poster)
-                binding.overview.text = movie.overview
+                //binding.overview.text = movie.overview
+                binding.overview.text = translate(movie.overview)
                 binding.releaseDate.text = date(movie.release_date)
             }
         }
@@ -25,6 +26,15 @@ class MovieAdapter(private val movies: MutableList<Movie>) : RecyclerView.Adapte
                 return liste[2] + "-" + liste[1] + "-" + liste[0]
             } else {
                 return ""
+            }
+        }
+
+        private fun translate(text: String): String {
+            scope.launch {
+                val input = "Traduis le texte suivant en français : $text"
+                val response = generativeModel.generateContent(input)
+
+                print(response.text)
             }
         }
     }

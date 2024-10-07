@@ -9,7 +9,7 @@ android {
 
     defaultConfig {
         applicationId = "com.example.marvel"
-        minSdk = 24
+        minSdk = 31
         targetSdk = 34
         versionCode = 1
         versionName = "1.0"
@@ -53,6 +53,7 @@ dependencies {
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
     implementation("com.squareup.retrofit2:converter-gson:2.9.0")
     implementation("androidx.datastore:datastore-preferences:1.0.0")
+    implementation("com.google.ai.edge.aicore:aicore:0.0.1-exp01")
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
