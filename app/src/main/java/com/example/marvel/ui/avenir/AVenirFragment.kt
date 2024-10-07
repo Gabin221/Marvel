@@ -8,7 +8,6 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.marvel.Movie
 import com.example.marvel.R
 import com.example.marvel.databinding.FragmentAVenirBinding
 import com.example.marvel.MovieAdapter
